@@ -32,13 +32,13 @@ class Factory(object):
             '500hz': boxes.VoltaBox500Hz,
             'binary': boxes.VoltaBoxBinary,
             'stm32': boxes.VoltaBoxStm32,
-
+            'yattor': boxes.YattorBox,
         }
         self.phones = {
             'android': phones.AndroidPhone,
             'android_old': phones.AndroidOldPhone,
             'iphone': phones.iPhone,
-            'nexus4': phones.Nexus4,
+            'abro': phones.Abro,
         }
 
     def detect_volta(self, config):
@@ -205,13 +205,25 @@ class Core(object):
             self.grabber_listeners.append(self.uploader)
             self.uploader.create_job()
 
+            self._artifacts_dir = self.artifacts_dir+'/'+str(self.uploader.jobno)
+            if not os.path.isdir(self._artifacts_dir):
+                os.makedirs(self._artifacts_dir)
+            os.chmod(self._artifacts_dir, 0o755)
+            self.currents_fname = self.artifacts_dir+"/currents.data"
+            self.event_fnames = {
+                key: "{artifacts_dir}/{data}.data".format(
+                    artifacts_dir=self.artifacts_dir,
+                    data=key
+                ) for key in self.event_types
+            }
+
         if 'console' in self.enabled_modules:
             for type_, fname in self.event_fnames.items():
                 self.event_listeners[type_].append(self.console)
             self.grabber_listeners.append(self.console)
 
         self._setup_filelisteners()
-        return 0
+        return self.uploader.jobno
 
     def _setup_filelisteners(self):
         logger.debug('Creating file listeners...')

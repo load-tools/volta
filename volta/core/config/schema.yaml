@@ -85,6 +85,27 @@ phone:
     util:
       type: string
       default: /Applications/Apple\ Configurator\ 2.app/Contents/MacOS/
+    blink:
+      type: boolean
+      default: false
+    blink_delay:
+      type: integer
+      default: 2000
+    led:
+      type: boolean
+      default: true
+    threads:
+      type: integer
+      default: 3
+    blinks:
+      type: integer
+      default: 10
+    camera_manager:
+      type: boolean
+      default: false
+    blink_toast:
+      type: boolean
+      default: false
 sync:
   type: dict
   schema:
